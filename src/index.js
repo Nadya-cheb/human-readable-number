@@ -1,6 +1,6 @@
 module.exports = function toReadable (number) {
-        /*0-10*/
-        let unit1_10 = {
+        /*0-19*/
+        let range1_19 = {
             0: 'zero',
             1: 'one',
             2: 'two',
@@ -11,10 +11,6 @@ module.exports = function toReadable (number) {
             7: 'seven',
             8: 'eight',
             9: 'nine',
-            10: 'ten',
-        }
-        /*11-20*/
-        let unit10_19 = {
             10: 'ten',
             11: 'eleven',
             12: 'twelve',
@@ -27,7 +23,7 @@ module.exports = function toReadable (number) {
             19: 'nineteen',
         }
         /*20-90*/
-        let unit20_90 = {
+        let range20_90 = {
             20: 'twenty',
             30: 'thirty',
             40: 'forty',
@@ -37,71 +33,55 @@ module.exports = function toReadable (number) {
             80: 'eighty',
             90: 'ninety',
         }
-        /*100-900*/
-        let unit100_900 = {
-            100: 'one hundred',
-            200: 'two hundred',
-            300: 'three hundred',
-            400: 'four hundred',
-            500: 'five hundred',
-            600: 'six hundred',
-            700: 'seven hundred',
-            800: 'eight hundred',
-            900: 'nine hundred',
-        }
-    
-        let unit = '';
+          
+        let range = '';
         let arrString = String(number).split('');
     
         switch (true) {
-            case arrString.length == 1: unit = "1_10"; break;
-            case arrString.length == 2: if (number < 20) unit = "11_19"; else unit = "20_90"; break;
-            case arrString.length == 3: unit = "100_900"; break;
+            case arrString.length == 1:
+            case arrString.length == 2: 
+                if (number < 20) range = "1_19"; 
+                else range = "20_90"; 
+                break;
+            case arrString.length == 3: range = "100_900"; 
+                break;
         }
         let resArray = [];    
       
-        switch (unit) {
-            case "100_900":
-                resArray.push(unit100_900[arrString[0] * 100]);
+        switch (true) {
+            case arrString.length == 3:
+                //hundred
+                resArray.push(range1_19[arrString[0]]);
+                resArray.push('hundred');
 
                 let number_new = number - arrString[0] * 100;
                 if (number_new > 0) {
                     let arrString_new = String(number_new).split('');
-                    switch (true) {
-                        case arrString_new.length == 1: unit = "1_10"; break;
-                        case arrString_new.length == 2: if (number_new < 20) unit = "11_19"; else unit = "20_90"; break;
-                    }
+                    
+                    if (arrString_new.length == 2 || arrString_new.length == 1) {
+                            if (number_new <= 19) {
+                                resArray.push(range1_19[number_new]);
+                            } else {
+                                resArray.push(range20_90[arrString_new[0] * 10]);
 
-                    switch (unit) {
-                        case "20_90":
-                            resArray.push(unit20_90[arrString_new[0] * 10]);
-                            if (arrString_new[1] != 0) {
-                                resArray.push(unit1_10[arrString_new[1] * 1]);
+                                if (arrString_new[1] * 1 != 0) {
+                                    resArray.push(range1_19[arrString_new[1] * 1]);
+                                }
                             }
-                            break;
-                        case "11_19":
-                            resArray.push(unit10_19[number_new]);
-                            break;
-                        case "1_10":
-                            resArray.push(unit1_10[number_new]);
-                            break;
                     }
                 }
                 break;
-            case "20_90":
-                resArray.push(unit20_90[arrString[0] * 10]);
-                if (arrString[1] != 0) {
-                    resArray.push(unit1_10[arrString[1] * 1]);
+            case (arrString.length == 2 || arrString.length == 1):
+                if (number <= 19) {
+                    resArray.push(range1_19[number]);
+                } else {
+                    resArray.push(range20_90[arrString[0] * 10]);
+
+                    if (arrString[1] * 1 != 0) {
+                        resArray.push(range1_19[arrString[1] * 1]);
+                    }
                 }
                 break;
-            case "11_19":
-                resArray.push(unit10_19[number]);
-                break;
-            case "1_10":
-                resArray.push(unit1_10[number]);
-                break;
-            }
-            res= resArray.join(' ');
-
-        return res;
+        }
+     return resArray.join(' ');
 }
