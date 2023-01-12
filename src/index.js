@@ -33,20 +33,10 @@ module.exports = function toReadable (number) {
             80: 'eighty',
             90: 'ninety',
         }
-          
-        let range = '';
+           
+        let resArray = []; 
+        let numberCheck;
         let arrString = String(number).split('');
-    
-        switch (true) {
-            case arrString.length == 1:
-            case arrString.length == 2: 
-                if (number < 20) range = "1_19"; 
-                else range = "20_90"; 
-                break;
-            case arrString.length == 3: range = "100_900"; 
-                break;
-        }
-        let resArray = [];    
       
         switch (true) {
             case arrString.length == 3:
@@ -54,32 +44,41 @@ module.exports = function toReadable (number) {
                 resArray.push(range1_19[arrString[0]]);
                 resArray.push('hundred');
 
-                let number_new = number - arrString[0] * 100;
-                if (number_new > 0) {
-                    let arrString_new = String(number_new).split('');
+                numberCheck = number - arrString[0] * 100;
+                if (numberCheck > 0) {
+                    let arrString_new = String(numberCheck).split('');
                     
                     if (arrString_new.length == 2 || arrString_new.length == 1) {
-                            if (number_new <= 19) {
-                                resArray.push(range1_19[number_new]);
+                            if (numberCheck <= 19) {
+                                resArray.push(range1_19[numberCheck]);
                             } else {
-                                resArray.push(range20_90[arrString_new[0] * 10]);
+                                numberCheck = arrString_new[0] * 10;
+                                resArray.push(range20_90[numberCheck]);
 
-                                if (arrString_new[1] * 1 != 0) {
-                                    resArray.push(range1_19[arrString_new[1] * 1]);
+                                numberCheck = arrString_new[1] * 1;
+                                if (numberCheck != 0) {
+                                    resArray.push(range1_19[numberCheck]);
                                 }
                             }
                     }
                 }
                 break;
-            case (arrString.length == 2 || arrString.length == 1):
+            case (arrString.length == 2):
+            case (arrString.length == 1):
                 if (number <= 19) {
                     resArray.push(range1_19[number]);
                 } else {
-                    resArray.push(range20_90[arrString[0] * 10]);
+                    numberCheck = arrString[0] * 10;
+                    resArray.push(range20_90[numberCheck]);
 
-                    if (arrString[1] * 1 != 0) {
-                        resArray.push(range1_19[arrString[1] * 1]);
-                    }
+                    numberCheck = arrString[1] * 1;
+                    if (arrString.length == 1) {
+                        resArray.push(range1_19[numberCheck]);
+                    } else {
+                        if (numberCheck != 0) {
+                            resArray.push(range1_19[numberCheck]);
+                       }
+                    }                    
                 }
                 break;
         }
